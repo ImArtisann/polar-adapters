@@ -1,5 +1,41 @@
 # @polar-sh/hono
 
+## 1.4.0
+
+### Minor Changes
+
+- 69eb956: Adds `OnOrderUpdated` Webhook support
+
+### Patch Changes
+
+- 45a7a63: Do not attempt to create customer that already exist
+- 96c6b83: Implements user deletion hook
+- c6f30a7: Skips duplicate customer creation in better-auth plugin
+
+## 1.3.0
+
+### Minor Changes
+
+- 6c46bd1: feat: add seats param to checkout
+
+## 1.2.1
+
+### Patch Changes
+
+- 81e9926: Upgrade dependencies, list Next.js 16 as supported peer dependency
+
+## 1.2.0
+
+### Minor Changes
+
+- 1deb3b3: Update sdk to 0.40.2
+
+## 1.1.11
+
+### Patch Changes
+
+- 3250323: Update Polar SDK to 0.38.1
+
 ## 1.1.10
 
 ### Patch Changes

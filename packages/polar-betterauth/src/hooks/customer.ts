@@ -19,11 +19,19 @@ export const onBeforeUserCreate =
 					});
 				}
 
-				await options.client.customers.create({
-					...params,
-					email: user.email,
-					name: user.name,
-				});
+				// Check if customer already exists
+				const { result: existingCustomers } =
+					await options.client.customers.list({ email: user.email });
+				const existingCustomer = existingCustomers.items[0];
+
+				// Skip creation if customer already exists
+				if (!existingCustomer) {
+					await options.client.customers.create({
+						...params,
+						email: user.email,
+						name: user.name,
+					});
+				}
 			} catch (e: unknown) {
 				if (e instanceof Error) {
 					throw new APIError("INTERNAL_SERVER_ERROR", {
@@ -93,6 +101,35 @@ export const onUserUpdate =
 						`Polar customer update failed. Error: ${e}`,
 					);
 				}
+			}
+		}
+	};
+
+export const onUserDelete =
+	(options: PolarOptions) =>
+	async (user: User, context?: GenericEndpointContext | undefined) => {
+		if (context && options.createCustomerOnSignUp) {
+			try {
+				if (user.email) {
+					const { result: existingCustomers } =
+						await options.client.customers.list({ email: user.email });
+					const existingCustomer = existingCustomers.items[0];
+					if (existingCustomer) {
+						await options.client.customers.delete({
+							id: existingCustomer.id,
+						});
+					}
+				}
+			} catch (e: unknown) {
+				if (e instanceof Error) {
+					context?.context.logger.error(
+						`Polar customer delete failed. Error: ${e.message}`,
+					);
+					return;
+				}
+				context?.context.logger.error(
+					`Polar customer delete failed. Error: ${e}`,
+				);
 			}
 		}
 	};

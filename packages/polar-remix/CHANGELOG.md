@@ -1,5 +1,30 @@
 # @polar-sh/hono
 
+## 0.5.0
+
+### Minor Changes
+
+- 6c46bd1: feat: add seats param to checkout
+
+## 0.4.0
+
+### Minor Changes
+
+- 1deb3b3: Update sdk to 0.40.2
+
+### Patch Changes
+
+- Updated dependencies [1deb3b3]
+  - @polar-sh/adapter-utils@0.3.0
+
+## 0.3.11
+
+### Patch Changes
+
+- 3250323: Update Polar SDK to 0.38.1
+- Updated dependencies [3250323]
+  - @polar-sh/adapter-utils@0.2.10
+
 ## 0.3.10
 
 ### Patch Changes

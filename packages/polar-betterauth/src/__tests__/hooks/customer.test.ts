@@ -1,5 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { onBeforeUserCreate, onAfterUserCreate, onUserUpdate } from "../../hooks/customer";
+import {
+	onAfterUserCreate,
+	onBeforeUserCreate,
+	onUserUpdate,
+} from "../../hooks/customer";
 import { createTestPolarOptions, mockApiError } from "../utils/helpers";
 import {
 	createMockCustomer,
@@ -25,6 +29,17 @@ describe("customer hooks", () => {
 
 	beforeEach(() => {
 		mockClient = createMockPolarClient();
+		vi.mocked(mockClient.customers.list).mockResolvedValue({
+			result: {
+				items: [],
+				pagination: { totalCount: 0, maxPage: 1 },
+			},
+			next: vi.fn(),
+			[Symbol.asyncIterator]: vi.fn(),
+		});
+		vi.mocked(mockClient.customers.create).mockResolvedValue(
+			createMockCustomer(),
+		);
 		vi.clearAllMocks();
 		// Mock console.log to avoid test output noise
 		vi.spyOn(console, "log").mockImplementation(() => {});
@@ -58,6 +73,36 @@ describe("customer hooks", () => {
 			});
 		});
 
+		it("should not create customer when customer already exists", async () => {
+			const options = createTestPolarOptions({
+				client: mockClient,
+				createCustomerOnSignUp: true,
+			});
+
+			const mockUser = createMockUser({
+				id: "user-123",
+				email: "test@example.com",
+				name: "Test User",
+			});
+
+			const mockCustomer = createMockCustomer();
+
+			vi.mocked(mockClient.customers.list).mockResolvedValue({
+				result: {
+					items: [mockCustomer],
+					pagination: { totalCount: 1, maxPage: 1 },
+				},
+				next: vi.fn(),
+				[Symbol.asyncIterator]: vi.fn(),
+			});
+
+			const ctx = { context: { logger: { error: vi.fn() } } } as any;
+			const hook = onBeforeUserCreate(options);
+
+			await hook(mockUser, ctx);
+
+			expect(mockClient.customers.create).not.toHaveBeenCalled();
+		});
 
 		it("should use custom getCustomerCreateParams when provided", async () => {
 			const mockGetCustomerCreateParams = vi.fn().mockResolvedValue({
@@ -90,7 +135,6 @@ describe("customer hooks", () => {
 				metadata: { source: "website", plan: "premium" },
 			});
 		});
-
 
 		it("should not create customer when createCustomerOnSignUp is disabled", async () => {
 			const options = createTestPolarOptions({
@@ -200,8 +244,10 @@ describe("customer hooks", () => {
 			vi.mocked(mockClient.customers.list).mockResolvedValue({
 				result: {
 					items: [existingCustomer],
-					pagination: { total: 1, maxPage: 1 },
+					pagination: { totalCount: 1, maxPage: 1 },
 				},
+				next: vi.fn(),
+				[Symbol.asyncIterator]: vi.fn(),
 			});
 
 			vi.mocked(mockClient.customers.update).mockResolvedValue(
@@ -245,8 +291,10 @@ describe("customer hooks", () => {
 			vi.mocked(mockClient.customers.list).mockResolvedValue({
 				result: {
 					items: [existingCustomer],
-					pagination: { total: 1, maxPage: 1 },
+					pagination: { totalCount: 1, maxPage: 1 },
 				},
+				next: vi.fn(),
+				[Symbol.asyncIterator]: vi.fn(),
 			});
 
 			vi.mocked(mockClient.customers.update).mockResolvedValue(
@@ -286,8 +334,10 @@ describe("customer hooks", () => {
 			vi.mocked(mockClient.customers.list).mockResolvedValue({
 				result: {
 					items: [existingCustomer],
-					pagination: { total: 1, maxPage: 1 },
+					pagination: { totalCount: 1, maxPage: 1 },
 				},
+				next: vi.fn(),
+				[Symbol.asyncIterator]: vi.fn(),
 			});
 
 			const ctx = { context: { logger: { error: vi.fn() } } } as any;

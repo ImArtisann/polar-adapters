@@ -1,5 +1,36 @@
 # polar-nextjs
 
+## 0.7.0
+
+### Minor Changes
+
+- 6c46bd1: feat: add seats param to checkout
+
+## 0.6.0
+
+### Minor Changes
+
+- 81e9926: Upgrade dependencies, list Next.js 16 as supported peer dependency
+
+## 0.5.0
+
+### Minor Changes
+
+- 1deb3b3: Update sdk to 0.40.2
+
+### Patch Changes
+
+- Updated dependencies [1deb3b3]
+  - @polar-sh/adapter-utils@0.3.0
+
+## 0.4.11
+
+### Patch Changes
+
+- 3250323: Update Polar SDK to 0.38.1
+- Updated dependencies [3250323]
+  - @polar-sh/adapter-utils@0.2.10
+
 ## 0.4.10
 
 ### Patch Changes
